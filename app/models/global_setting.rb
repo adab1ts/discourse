@@ -146,13 +146,8 @@ class GlobalSetting
   end
 
 
-  if Rails.env == "test"
-    @provider = BlankProvider.new
-  else
-    @provider =
-      FileProvider.from(File.expand_path('../../../config/discourse.conf', __FILE__)) ||
-      EnvProvider.new
-  end
+  @provider = FileProvider.from(File.expand_path("../../../config/discourse.#{Rails.env}.conf", __FILE__))
+  @provider ||= Rails.env == "test" ? BlankProvider.new : EnvProvider.new
 
   load_defaults
 end
